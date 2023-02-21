@@ -1,0 +1,15 @@
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\bin\Debug\net7.0\HadaniCiselConsole.exe
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\bin\Debug\net7.0\HadaniCiselConsole.deps.json
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\bin\Debug\net7.0\HadaniCiselConsole.runtimeconfig.json
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\bin\Debug\net7.0\HadaniCiselConsole.dll
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\bin\Debug\net7.0\HadaniCiselConsole.pdb
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.csproj.AssemblyReference.cache
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.AssemblyInfoInputs.cache
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.AssemblyInfo.cs
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.csproj.CoreCompileInputs.cache
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.dll
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\refint\HadaniCiselConsole.dll
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.pdb
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\HadaniCiselConsole.genruntimeconfig.cache
+C:\Users\toted\Desktop\Repos\ppt_23\01\HadaniCiselConsole\obj\Debug\net7.0\ref\HadaniCiselConsole.dll
