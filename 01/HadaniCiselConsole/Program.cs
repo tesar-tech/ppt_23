@@ -44,7 +44,7 @@ while (true)
 
 
 
-int NahodneCislo() => Random.Shared.Next(1, 100);
+int NahodneCislo() => Random.Shared.Next(1,101);
 
 
 

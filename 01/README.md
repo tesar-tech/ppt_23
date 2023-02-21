@@ -52,8 +52,7 @@ Až budete mít základní funkcionalitu:
 - po úspěšném odehrání dejte možnost hrát znovu
   - "generování" nového čísla dejte do metody (aby to bylo na jednom místě)
     - použijte lambda zápis
-- vyvarujte se všech warningů 
-
+- vyvarujte se všech warningů
 
 ## Blazor App
 
@@ -69,11 +68,12 @@ Až budete mít základní funkcionalitu:
   - přidat ho do root složky (tam, kde je .git)
 - puštění `dotnet watch`
 - Změna textu Hello, World!
-- Přidání stráky "HadaniCisel" pod url /hra
-- Předělat konzolovou aplikaci do Blazoru
 
 ### Hádání čísel v Blazoru
 
+Předělat hru Hádání čísel z konzolové aplikace do webové aplikace Blazoru.
+
+- Přidejte stráku "HadaniCisel" pod url /hra
 - Pro zadávání čísel použijte `<input />`
 - Do stránky přidejte sekci `code`
   
@@ -95,4 +95,10 @@ Až budete mít základní funkcionalitu:
 - vytvořte proměnnou hadaneCislo
   - Propojte ji s inputem přidáním těchto vlstností `@bind-value=hadaneCislo @bind-value:event="oninput"`
 
-- ...
+- vhodně vypište status (větší, menší)
+
+- Možná se vám bude hodit metoda OnInitialized.
+  - Chápejte ji jako kontruktor razor komponenty.¨
+    - Vykoná se jen jednou a to při startu komponenty.
+    - (ale není to konstruktor, ten ale můžete použít také.)
+    - (podobných metod je v Blazoru více, ale o tom jindy.)
