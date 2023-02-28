@@ -1,5 +1,6 @@
 # source: https://swimburger.net/blog/dotnet/how-to-deploy-aspnet-blazor-webassembly-to-github-pages
 # source: https://dev.to/madhust/how-to-publish-blazor-webassembly-application-to-github-pages-using-github-action-54h4
+
 name: Sestavit a nasadit apku # název - nezáleží na něm 
 
 on:
