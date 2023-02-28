@@ -37,9 +37,9 @@ jobs:
     # tato akce zařídí přenesení obsahu wwwroot složky to samostatné větve s názvem gh-pages
     # posléze je nutné nastavit v Settings -> Project větev gh-pages jako zdroj pro stránky
     - name: Commit wwwroot to GitHub Pages 
-      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #token, který umožní manipulaci s repem (jako např. vytvoření větve gh-pages)
-        BRANCH: gh-pages
+        #GITHUB_TOKEN: ${{ secrets.token }} #token, který umožní manipulaci s repem (jako např. vytvoření větve gh-pages)
+        #BRANCH: gh-pages
         FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
         #obsahuje například soubor index.html, který se použije k načtení celé stránky.
