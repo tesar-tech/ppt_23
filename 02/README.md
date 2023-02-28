@@ -21,6 +21,7 @@ Co se bude dít
 ```yml
 # source: https://swimburger.net/blog/dotnet/how-to-deploy-aspnet-blazor-webassembly-to-github-pages
 # source: https://dev.to/madhust/how-to-publish-blazor-webassembly-application-to-github-pages-using-github-action-54h4
+
 name: Sestavit a nasadit apku # název - nezáleží na něm 
 
 on:
@@ -32,7 +33,10 @@ env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
   
   
 jobs:
+
   deploy-to-github-pages:
+    permissions:
+      contents: write # může zapisovat do repozitáže
     runs-on: ubuntu-latest # use ubuntu-latest image to run steps on
     steps:
     # uses GitHub's checkout action to checkout code form the master branch
@@ -40,7 +44,7 @@ jobs:
     - name: Nastavení .NET # stáhneme a nastavíme dotnet (není součástí základní instalace ubuntu)
       uses: actions/setup-dotnet@v1 #externí "action", její zdroják je https://github.com/actions/setup-dotnet
       with:
-        dotnet-version: 6.0.x #verze
+        dotnet-version: 7.0.103 #verze
     - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
       run: dotnet publish 02/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
       # ☝️ Upravte dle názvu vašeho .sln
@@ -58,10 +62,8 @@ jobs:
     # tato akce zařídí přenesení obsahu wwwroot složky to samostatné větve s názvem gh-pages
     # posléze je nutné nastavit v Settings -> Project větev gh-pages jako zdroj pro stránky
     - name: Commit wwwroot to GitHub Pages 
-      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #token, který umožní manipulaci s repem (jako např. vytvoření větve gh-pages)
-        BRANCH: gh-pages
         FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
         #obsahuje například soubor index.html, který se použije k načtení celé stránky.
 ```
@@ -72,7 +74,7 @@ jobs:
 - Stárnky už máme ve větvi gh-pages
 - V nastavení repa říct gh z jaké větve chceme stránky hostovat:
 
-![](media/gh-pages-nastaveni.png)
+![](media/gh-pages-nastaveni.png)  
 
 - Po nasazení na gh-pages by se měla rozjet druhá action, která se postará o samotné zpracování a nasazení.
 
@@ -82,7 +84,7 @@ jobs:
 
 ## Edit Readme.md
 
-- Jestli nemáte, přidejte do rooto vašeho rezpozitáře soubor README.md
+- Jestli nemáte, přidejte do rootu vašeho rezpozitáře soubor README.md
   - tento soubor se ukáže jako obsah stránky když vstoupíte na githubu na repozitář
   - Funguje to tak pro každou složku (a v ní soubor readme.md)
 - přidejte odkaz na běžicí aplikace
@@ -223,7 +225,7 @@ Modré tlačítko:
 - Vlastnost `@Body` -> Tam se vygeneruje stránka na kterou uživ. vstoupil.
 - Umožňuje mít stejný Layout, aniž byste neustále opakovili stejné prvky. 
 
-### Úlohy
+## Další úlohy
 
 - Změňte favicon na jakýkoliv (vámi zvolený ) `<link rel="icon" type="image/x-icon" href="jakýkolivObrázek.png">`
 - Vytvořte jednoduché menu - buď nahoře nebo na straně aplikace (využijte layout)
@@ -233,5 +235,4 @@ Modré tlačítko:
 - Změňte text `Loading…` na něco jiného.
 - Pokud uživatel vstoupí na stránku, kterou aplikace nemá. Zobrazte chybovou hlášku a přidejte odkaz na návrat na index. 
 - Na index napište uvítací zprávu
-- Dejte tomu celému nějaký nastylovaný nádech. 
-
+- Dejte tomu celému nějaký nastylovaný nádech.
