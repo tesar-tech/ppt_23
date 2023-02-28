@@ -1,0 +1,45 @@
+# source: https://swimburger.net/blog/dotnet/how-to-deploy-aspnet-blazor-webassembly-to-github-pages
+# source: https://dev.to/madhust/how-to-publish-blazor-webassembly-application-to-github-pages-using-github-action-54h4
+name: Sestavit a nasadit apku # název - nezáleží na něm 
+
+on:
+  push:
+    branches: [ master ] # když je push na větvi master
+    # změnit na  ☝️  main (vaši hlavní větev)
+env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
+  PUBLISH_DIR: vystup #výstupní složka kam se vybuildí aplikace (tuhle složku to vytvoří, na názvu nezáleží)
+  
+  
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest # use ubuntu-latest image to run steps on
+    steps:
+    # uses GitHub's checkout action to checkout code form the master branch
+    - uses: actions/checkout@v3 # zpřístupní nám zdroják v repu
+    - name: Nastavení .NET # stáhneme a nastavíme dotnet (není součástí základní instalace ubuntu)
+      uses: actions/setup-dotnet@v1 #externí "action", její zdroják je https://github.com/actions/setup-dotnet
+      with:
+        dotnet-version: 7.0.x #verze
+    - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
+      run: dotnet publish 02/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
+      # ☝️ Upravte dle názvu vašeho .sln
+
+    # změní tag base v index.html from '/' na 'ppt_22' což je gh page k tomuto repu
+    - name: Change base-tag in index.html from to your gh repo
+      run: sed -i 's/<base href="\/" \/>/<base href="\/ppt_23\/" \/>/g' ${{env.PUBLISH_DIR}}/wwwroot/index.html
+      # ☝️ Upravte  dle názvu vašeho repozitáře
+
+      
+    # přidá .nojekyll, čímž říká gh pages, že toto není jekkyl projekt (jinak to nedovolí soubor s podtržítkem)
+    - name: Add .nojekyll file
+      run: touch ${{env.PUBLISH_DIR}}/wwwroot/.nojekyll      
+      
+    # tato akce zařídí přenesení obsahu wwwroot složky to samostatné větve s názvem gh-pages
+    # posléze je nutné nastavit v Settings -> Project větev gh-pages jako zdroj pro stránky
+    - name: Commit wwwroot to GitHub Pages 
+      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #token, který umožní manipulaci s repem (jako např. vytvoření větve gh-pages)
+        BRANCH: gh-pages
+        FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
+        #obsahuje například soubor index.html, který se použije k načtení celé stránky.
