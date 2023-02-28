@@ -1,17 +1,18 @@
 ﻿@page "/hra"
 
-<h1>Hadani cisel</h1>
+<h1 class="font-bold text-xl">Hadani cisel</h1>
 
-<input @bind-value=cislo @bind-value:event="oninput" />
-<button @onclick="Hadam">Hadej</button>
+<input class="border-2 border-blue-700" @bind-value=cislo @bind-value:event="oninput" />
+<button class="bg-teal-400 rounded-sm px-2 py-1 text-black" @onclick="Hadam">Hadej</button>
 
 <div>  Číslo je: @cislo</div>
-<div style="margin-top: 20px;">@vysledek</div>
+<div class="mt-10">@vysledek</div>
 
 @code {
     int hadane_cislo = Random.Shared.Next(1, 101);
     int? cislo;
     string vysledek = "";
+    
     void Hadam()
     {
         if (cislo == hadane_cislo)
