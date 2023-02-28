@@ -12,7 +12,10 @@ env: #proměnné, které můžeme používat dále pomocí env.PUBLISH_DIR
   
   
 jobs:
+
   deploy-to-github-pages:
+    permissions:
+      contents: write # může zapisovat do repozitáže
     runs-on: ubuntu-latest # use ubuntu-latest image to run steps on
     steps:
     # uses GitHub's checkout action to checkout code form the master branch
@@ -40,7 +43,5 @@ jobs:
     - name: Commit wwwroot to GitHub Pages 
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #token, který umožní manipulaci s repem (jako např. vytvoření větve gh-pages)
-        #BRANCH: gh-pages
         FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
         #obsahuje například soubor index.html, který se použije k načtení celé stránky.
