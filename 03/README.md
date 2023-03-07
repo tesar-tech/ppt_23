@@ -1,6 +1,6 @@
 # 03 - Layout, F12, Flexbox, Grid, Vybavení, Razor Components
 
-
+> DRAFT !!!
 ## Base tag
 
 - Slouží k nastavení relativních odkazů
@@ -9,9 +9,6 @@
   - na gh pages stránky končí /repo_name - což je přesně ta relativní část
 - <base href="repo_name"> se mění jenom na gh pages 
   - proto daný task v gha (github action)
-
-
-> DRAFT !!!
 
 ## Tailwind play
 
@@ -66,6 +63,32 @@
    <button class="bg-gray-500 rounded-md mx-2 my-1">Butón</button>
  </div>
 ```
+## VybaveniVm
+
+- vytvořte si složku `ViewModels`
+- přidejte třídu `VybaveniVm`
+- Třída `VybaveniVm` má tyto vlastnosti (odpovídají sloupečkům v tabulce):
+  - Name (string)
+  - BoughtDateTime (DateTime)
+  - LastRevisionDateTime (DateTime)
+  - NeedsRevision (bool) - vlastnost bez settru. True v případě, že poslední revize je starší než 2 roky.
+
+## Vybavení nemocnice
+
+- Vytvořte seznam vybavení, tak aby fungoval přibližně takto: 
+
+![](media/cv_du.gif)
+
+- Seznam vybavení je `List` (nebo pole) typu `VybaveniVm`. Tuto třídu musíte nejdřív přidat do projektu.
+- Použijte na layout Grid
+
+    - Odpovídající sloupec má červené podbarvení pokud je revize třeba.
+- V posledním sloupci jsou tlačítka:
+  - Smazat: Smaže prvek ze seznamu
+  - Provést revizi: nastaví datum poslední revize na dnešek
+- Součástí úlohy je i vytvořit generátor dat (jak čísel, tak textů)
+- Řádek si dejte do komponenty
+
 
 ## Razor komponenty
 
@@ -79,27 +102,3 @@
 - Binding 
 - Parameter
 - RenderFragment - kód který se mění per instance komponenty
-
-
-## Vybavení nemocnice
-
-- Vytvořte seznam vybavení, tak aby fungoval přibližně takto: 
-
-![](media/cv_du.gif)
-
-- Seznam vybavení je `List` (nebo pole) typu `VybaveniData`. Tuto třídu musíte nejdřív přidat do projektu.
-- Použijte na layout Grid
-- Třída `VybaveniData` má tyto vlastnosti (odpovídají sloupečkům v tabulce):
-  - Name (string)
-  - BoughtDateTime (DateTime)
-  - LastRevisionDateTime (DateTime)
-  - NeedsRevision (bool) - vlastnost bez settru. True v případě, že poslední revize je starší než 2 roky.
-    - Odpovídající sloupec má červené podbarvení pokud je revize třeba.
-- V posledním sloupci jsou tlačítka:
-  - Smazat: Smaže prvek ze seznamu
-  - Provést revizi: nastaví datum poslední revize na dnešek
-- Součástí úlohy je i vytvořit generátor dat (jak čísel, tak textů)
-- Řádek si dejte do komponenty
-
-
-## API
