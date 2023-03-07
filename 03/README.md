@@ -63,6 +63,8 @@
    <button class="bg-gray-500 rounded-md mx-2 my-1">Butón</button>
  </div>
 ```
+
+
 ## VybaveniVm
 
 - vytvořte si složku `ViewModels`
@@ -71,7 +73,7 @@
   - Name (string)
   - BoughtDateTime (DateTime)
   - LastRevisionDateTime (DateTime)
-  - NeedsRevision (bool) - vlastnost bez settru. True v případě, že poslední revize je starší než 2 roky.
+  - IsRevisionNeeded (bool) - vlastnost bez settru. True v případě, že poslední revize je starší než 2 roky.
 
 ## Vybavení nemocnice
 
@@ -99,6 +101,8 @@
 - Dá se komunikovat oběma směry
   - Z mateřské do potomka
   - Z potomka do mateřské
-- Binding 
 - Parameter
-- RenderFragment - kód který se mění per instance komponenty
+- EventCallback
+- Jindy:
+  - RenderFragment - kód který se mění per instance komponenty
+  - Binding
