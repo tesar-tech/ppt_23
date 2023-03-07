@@ -211,7 +211,7 @@ Modré tlačítko:
 
 - První c# kód, který se spustí po načtení.
 - Obsahuje nastavení celé aplikace. 
-  - `builder.RootComponents.Add<App>("#app");` -> vyměň element s `id=app` za komponentu typu `App`.
+  - `builder.RootComponents.Add<App>("#app");` -> vymění element s `id=app` za komponentu typu `App`.
 - Všimněte si zjednodušení c# syntaxe (většinou novinka z .net 6 a c# 9/10)
   - Top level namespace; class, metoda main
   - (za oponou je všechno přidáno do Main metody třídy Program (ale nejmenují se tak ))
@@ -230,8 +230,7 @@ Modré tlačítko:
 - Změňte favicon na jakýkoliv (vámi zvolený ) `<link rel="icon" type="image/x-icon" href="jakýkolivObrázek.png">`
 - Vytvořte jednoduché menu - buď nahoře nebo na straně aplikace (využijte layout)
 - Přidejte odkaz  FBMI odkazující na fakultní web.
-- Přidejte stránku `Vybavení nemocnice` a společně s ní i odkaz do menu.
-  - (Zde budeme posléze seznam vybavení nemocnice)
+- Přidejte stránku `Hádání čísel` jako odkaz do menu.
 - Změňte text `Loading…` na něco jiného.
 - Pokud uživatel vstoupí na stránku, kterou aplikace nemá. Zobrazte chybovou hlášku a přidejte odkaz na návrat na index. 
 - Na index napište uvítací zprávu
