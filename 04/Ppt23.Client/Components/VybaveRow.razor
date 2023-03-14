@@ -1,0 +1,36 @@
+@if (Vyb == null) return;
+
+@if (!Vyb.IsInEditMode)
+{
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.Name</div>
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.BoughtDateTime.ToString("yyyy-MMM-dd")</div>
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")</div>
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@(Vyb.IsRevisionNeeded ? "Ano" : "Ne")</div>
+
+    <div class="flex gap-2 @(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
+
+        <button @onclick="() => Vyb.LastRevisionDateTime = DateTime.Now" class="bg-red-500 twbtn">
+            Provést revizi
+        </button>
+
+        <button @onclick="() => SmazEventCallback.InvokeAsync()" class="bg-red-500 twbtn">
+            Smaž to
+        </button>
+    </div>
+}
+else //je v editacnim modu
+{
+
+
+
+}
+
+
+
+
+
+@code {
+    [Parameter, EditorRequired] public VybaveniVm? Vyb { get; set; }
+
+    [Parameter] public EventCallback SmazEventCallback { get; set; }
+}

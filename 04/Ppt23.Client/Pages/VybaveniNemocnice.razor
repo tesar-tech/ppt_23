@@ -1,0 +1,41 @@
+﻿@page "/vybaveni"
+@using Ppt23.Client.Components
+
+
+
+<div> pocet vybaveni @seznamVybaveni.Count</div>
+
+
+
+<button class="twbtn bg-violet-500" @onclick="()=> seznamVybaveni = VybaveniVm.VratRandSeznam(10)">
+    Nový seznam 
+</button>
+
+
+<div class="bg-green-500 grid grid-cols-5 gap-y-5">
+    <label>Název</label>
+    <label>Datum Nákupu</label>
+    <label>Poslední Revize</label>
+    <label>Prošlá Revize</label>
+    <label>Akce</label>
+   
+
+    @foreach (VybaveniVm vyb in seznamVybaveni)
+    {
+        <VybaveRow Vyb="vyb" SmazEventCallback="() => seznamVybaveni.Remove(vyb)">
+        </VybaveRow>
+    }
+
+</div>
+
+
+
+@code {
+    List<VybaveniVm> seznamVybaveni;
+
+    public VybaveniNemocnice()
+    {
+        seznamVybaveni = VybaveniVm.VratRandSeznam(10);
+    }
+
+}
