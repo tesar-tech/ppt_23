@@ -7,26 +7,39 @@
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")</div>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@(Vyb.IsRevisionNeeded ? "Ano" : "Ne")</div>
 
-    <div class="flex gap-2 @(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
+    <div class="flex gap-2">
 
-        <button @onclick="() => Vyb.LastRevisionDateTime = DateTime.Now" class="bg-red-500 twbtn">
+        <button @onclick="() => Vyb.LastRevisionDateTime = DateTime.Now" class="bg-sky-500 twbtn">
             Provést revizi
         </button>
 
-        <button @onclick="() => SmazEventCallback.InvokeAsync()" class="bg-red-500 twbtn">
+        <button @onclick="() => SmazEventCallback.InvokeAsync()" class="bg-red-500 twbtn ">
             Smaž to
+        </button>
+        <button @onclick="() => Vyb.IsInEditMode= true" class="bg-amber-500 twbtn">
+            Uprav to
         </button>
     </div>
 }
 else //je v editacnim modu
 {
 
+    <div><input type="text" @bind-value=@Vyb.Name/></div>
+    <div><input type="date" @bind-value=@Vyb.BoughtDateTime /></div>
+    <div><input type="date" @bind-value=@Vyb.LastRevisionDateTime/></div>
+    <div>@(Vyb.IsRevisionNeeded ? "Ano" : "Ne")</div>
 
+    <div class="flex gap-2 @(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
+        <button @onclick="() => Vyb.IsInEditMode = false" class="bg-amber-500 twbtn">
+            Ok
+        </button>
+
+        <button @onclick="() => Vyb.IsInEditMode = false" class="bg-gray-500 twbtn">
+            zruš
+        </button>
+    </div>
 
 }
-
-
-
 
 
 @code {

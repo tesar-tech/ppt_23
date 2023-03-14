@@ -1,4 +1,4 @@
-# 03 - Null reference Warning, Tailwind config, editace záznamnu, nový záznam, validace dat, formuláře
+# 04 - Null reference Warning, Tailwind config, editace záznamnu, validace dat, formuláře
 
 ## Null reference Warning
 
@@ -17,14 +17,14 @@ S textem: `Non-nullable property 'Item' must contain a non-null value when exiti
 - Řešením (špatným) je nastavit nějakou defaultní hodnotu, například:
 
 ```csharp
-[Parameter] public VybaveniModel Item { get; set; } = new();
+[Parameter] public VybaveniVm Item { get; set; } = new();
 ```
 
 - Toto řešení ☝️ je ale špatný nápad. Zbytečně vytváříme novou instanci. Properta `Item` si čeká na to co ji přijde z foreache, nepotřebuje tam nic předtím.
 - Další řešení je nastavit `Item` aby mohla přijmout null. Tedy udělat ji nullable, tak jak radí warning: `...Consider declaring the property as nullable`
 
 ```csharp
-[Parameter] public VybaveniModel? Item { get; set; }
+[Parameter] public VybaveniVm? Item { get; set; }
 ```
 
 - Tento warning zmlknul, ale objevil se nový na místě, kde se snažíme použít `Item`.
@@ -127,26 +127,18 @@ Validací, kterou se zde zabýváme se jmenuje Data Annotation Validation. Využ
 
 - Vyrenderuje se jako `form`.
 - Umožňuje kontrolovat validaci vstupů (vnořená komponenta `<DataAnnotationsValidator/>`)
-  - Spolupracuje s Modelem (VybaveniModel) a [Atributy](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/).
+  - Spolupracuje s Modelem (VybaveniVm) a [Atributy](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/).
 
 - Editační komponenty musíme umístit do `EditForm`
-- Jelikož jsou jednotlivé inputy v buňce tabulky (`td`) nemůže formulář umístit v tabulce, ani v `tr` tagu
-  - (je to trochu nešťastné, ale ne neřešitelné)
-- Formulář umístíme do jedné buňky, které nastavíme `colspan` (přes kolik buněk se rozšíří, defaultně 1) na 5 (celou tabulku, všechny sloupce)
-- Uvnitř této buňky vytvoříme novou tabulku s jedním řádkem
 
 ```razor
-<tr class="border-2 border-slate-400">
-    <td colspan="5">
         <EditForm Model=editingItem OnValidSubmit="() => TurnOffEdit(true)">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <table>
-                <tr>
-                    <td><InputText class="border-2 border-slate-300" @bind-Value=@editingItem.Name /></td>
+              <InputText class="border-2 border-slate-300" @bind-Value=@editingItem.Name />
 ```
 
-- `Model=editingItem` - vlastnost `Model` nastavuje proměnnou, kterou má formulář validovat. Je stejného typu jako Item (`VybaveniModel`).
+- `Model=editingItem` - vlastnost `Model` nastavuje proměnnou, kterou má formulář validovat. Je stejného typu jako Item (`VybaveniVm`).
   - Důvodem, proč tam není `Item` je právě možnost zrušení editace (hodnoty se pak kopírují z `Item` do `editItem` a obráceně). Vyřešíme dál.
 - `OnValidSubmit` nastavuje co se stane, když formulář bude "odeslán" (stisknuto tlačítko) a data nastavená v `Model` budou validní (alespoň 5 znaků na jménu). Toto nám ušetří dost práce oproti "ruční" validaci.
   - Míří to na metodu `TurnOfEdit`, (vytvořte ji nyní, implementaci doděláme).
@@ -181,9 +173,9 @@ public string Name { get; set; } = "";
 - Potřebujeme mechanismus jak zjistit, že se `Item` má upravovat
 
 ```csharp
-VybaveniModel? _Item;
+VybaveniVm? _Item;
 [Parameter]
-public VybaveniModel? Item
+public VybaveniVm? Item
 {
     get => _Item;
     set
@@ -218,10 +210,10 @@ private void TurnOnEdit()
 - Zapne se `IsInEditMode` (v případě že není, což je při kliknutí na tlačítko) a do `editingItem` se zkopírují hodnoty vlastností:
 
 ```csharp
-//VybaveniModel třída
-  public  VybaveniModel Copy()
+//VybaveniVm třída
+  public  VybaveniVm Copy()
     {
-        VybaveniModel to = new();
+        VybaveniVm to = new();
         to.BoughtDateTime = BoughtDateTime;
         to.LastRevision = LastRevision;
         to.IsInEditMode = IsInEditMode;
@@ -241,7 +233,7 @@ else if (editingItem != null && editingItem.IsInEditMode)
 {...}
 ```
 
-- Vypnutí editačního módu (volám při kliknutí na tlačítko Ok nebo při `OnValidSubmit`): 
+- Vypnutí editačního módu (volám při kliknutí na tlačítko Ok nebo při `OnValidSubmit`):
 
 ```csharp
 private void TurnOffEdit(bool success)
@@ -260,8 +252,8 @@ private void TurnOffEdit(bool success)
 - `success` nám řekne, jestli byla akce potvrzená (Ok, true) nebo zrušená (Zrušit, false). V případě true, se namapují hodnoty vlastností zpět na `Item`:
 
 ```csharp
-//VybaveniModel třída
-public void MapTo(VybaveniModel? to)
+//VybaveniVm třída
+public void MapTo(VybaveniVm? to)
 {
     if (to == null) return;
     to.BoughtDateTime = BoughtDateTime;
@@ -281,27 +273,3 @@ public void MapTo(VybaveniModel? to)
 
 - Taky byla odebrána akce na tlačítku "Přidej". Automaticky se bude snažit submitnout formulář, tento pokus se odchytí v `OnValidSubmit` (nebo se ukáže hláška validace)
 - Na tlačítku zrušit jsme přidali vlastnost `type="button"`. Defaultně mají tlačítka `type="submit"`, takže by se rušící tlačítko odesílalo formulář. 
-
-## Příště
-
-Všechno co je pod tímto nadpisem není určeno pro toto cvičení
-
-## PptNemocnice.Shared -> Přidání nového projektu
-
-- PptNemocnice.Shared (typu C# class library (nemá to nic moc společného s Blazorem))
-  - bude obsahovat věci, které budou sdílené s budoucím server projektem. 
-- Sem přidejte třídu `VybaveniModel` (nezapomeňte změnit namespace a smazat ji z Blazor projektu)
-- Přidejte referenci do Blazor projektu
-  - Ve VS přetažením jednoho projektu na druhý nebo
-  - úpravou `.csproj` souboru (PptNemocnice.csproj)
-  
-  ```xml
-  <ItemGroup>
-    <ProjectReference Include="..\PptNemocnice.Shared\PptNemocnice.Shared.csproj" />
-  </ItemGroup>
-  ```
-- (odstraňte `Class1.cs` v případě, že existuje v Shared projektu (je to pouze templejtová třída, kterou nepotřebujeme))
-- Nyní projekt funguje stejně jako předtím.
-
-
-
