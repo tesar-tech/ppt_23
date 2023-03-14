@@ -1,6 +1,6 @@
 # 03 - Layout, F12, Flexbox, Grid, Vybavení, Razor Components
 
-
+> DRAFT !!!
 ## Base tag
 
 - Slouží k nastavení relativních odkazů
@@ -9,9 +9,6 @@
   - na gh pages stránky končí /repo_name - což je přesně ta relativní část
 - <base href="repo_name"> se mění jenom na gh pages 
   - proto daný task v gha (github action)
-
-
-> DRAFT !!!
 
 ## Tailwind play
 
@@ -67,6 +64,34 @@
  </div>
 ```
 
+
+## VybaveniVm
+
+- vytvořte si složku `ViewModels`
+- přidejte třídu `VybaveniVm`
+- Třída `VybaveniVm` má tyto vlastnosti (odpovídají sloupečkům v tabulce):
+  - Name (string)
+  - BoughtDateTime (DateTime)
+  - LastRevisionDateTime (DateTime)
+  - IsRevisionNeeded (bool) - vlastnost bez settru. True v případě, že poslední revize je starší než 2 roky.
+
+## Vybavení nemocnice
+
+- Vytvořte seznam vybavení, tak aby fungoval přibližně takto: 
+
+![](media/cv_du.gif)
+
+- Seznam vybavení je `List` (nebo pole) typu `VybaveniVm`. Tuto třídu musíte nejdřív přidat do projektu.
+- Použijte na layout Grid
+
+    - Odpovídající sloupec má červené podbarvení pokud je revize třeba.
+- V posledním sloupci jsou tlačítka:
+  - Smazat: Smaže prvek ze seznamu
+  - Provést revizi: nastaví datum poslední revize na dnešek
+- Součástí úlohy je i vytvořit generátor dat (jak čísel, tak textů)
+- Řádek si dejte do komponenty
+
+
 ## Razor komponenty
 
 - Opakující se kód je vhodné dát do komponenty
@@ -76,7 +101,6 @@
 - Dá se komunikovat oběma směry
   - Z mateřské do potomka
   - Z potomka do mateřské
-- Binding 
 - Parameter
 - RenderFragment - kód který se mění per instance komponenty
 
@@ -101,4 +125,25 @@
 - Součástí úlohy je i vytvořit generátor dat (jak čísel, tak textů)
 - Řádek si dejte do komponenty
 
+## EventCallBack -> Volání nadřazené komponenty
 
+- Nyní k zakomentovanému řádku, který maže itemu ze seznamu.
+- Problém je v tom že v komponentě `VybaveniRow` nemáme `seznamVybaveni`.
+- Můžeme ho tam poslat v parametru. Avšak komponenta by se měla soustředit pouze na jeden řádek (podle toho se jmenuje) a navíc bychom stejně potřebovali aktualizovat celý seznam (z rodičovské komponenty, o tom později).
+- Řešením je vytvořit EventCallback -> zavolat rodičovské komponentě a říct ji: "Tato itema chce být smazána, poraď si s tím".
+
+```csharp
+[Parameter] public EventCallback<VybaveniVm> DeleteItemCallback { get; set; }
+```
+
+A jeho použití:
+
+```razor
+<button @onclick="() => DeleteItemCallback.InvokeAsync()">
+```
+
+- Tímto se ale nic nesmaže. Jenom tím dáváme možnost rodičovské komponentě reagovat na takovéto volání. Položku smažeme takto:
+
+```razor
+<VybaveniRow Item=item DeleteItemCallback="() => seznamVybaveni.Remove(item)" />
+```

@@ -1,5 +1,45 @@
-﻿<h3>VybaveniNemocnice</h3>
+﻿@page "/vybaveni"
+@using Ppt23.Client.Components
+
+
+<div> pocet vybaveni @seznamVybaveni.Count</div>
+
+
+
+<button>
+    Pridej nahodne vybaveni
+</button>
+<div class="bg-red-500 grid grid-cols-4">
+   
+
+    @foreach (VybaveniVm vyb in seznamVybaveni)
+    {
+
+        <VybaveRow Vyb="vyb"  SmazEventCallback="() => seznamVybaveni.Remove(vyb)" >
+
+        </VybaveRow>
+
+    }
+</div>
+
+
 
 @code {
+
+    List<VybaveniVm> seznamVybaveni;
+
+    public VybaveniNemocnice()
+    {
+        seznamVybaveni = VybaveniVm.VratRandSeznam(2);
+        //seznamVybaveni[0].IsNameJack = false;
+    }
+
+    //void smazat(VybaveniVm vyb)
+    //{
+    //    seznamVybaveni.Remove(vyb);
+
+    //}
+
+
 
 }

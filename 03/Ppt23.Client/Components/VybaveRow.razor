@@ -1,0 +1,13 @@
+<div>@Vyb.Name</div>
+<div></div>
+<div></div>
+
+<div>
+    <button @onclick="() => SmazEventCallback.InvokeAsync()">smazat</button>
+</div>
+
+@code {
+
+    [Parameter ] public VybaveniVm Vyb { get; set; }
+    [Parameter] public EventCallback SmazEventCallback { get; set; }
+}
