@@ -273,3 +273,68 @@ public void MapTo(VybaveniVm? to)
 
 - Taky byla odebrána akce na tlačítku "Přidej". Automaticky se bude snažit submitnout formulář, tento pokus se odchytí v `OnValidSubmit` (nebo se ukáže hláška validace)
 - Na tlačítku zrušit jsme přidali vlastnost `type="button"`. Defaultně mají tlačítka `type="submit"`, takže by se rušící tlačítko odesílalo formulář. 
+
+## Nový záznam
+
+![](media/3033f246-46ae-443b-b98c-5298a1097d55.gif)
+
+- Přidejte tlačítko pro přidání nového záznamu.
+- Vytvořte proměnnou `isInNewMode` (ve `Vybaveni.razor`). Tlačítkem změníte hodnotu.
+- V případě, že je hodnota `isInNewMode` false, tak je zobrazeno tlačítko
+- V případě, že je hodnota true, tak se přidá nový řádek do tabulky a v tom otevřený záznam.
+  - Tento řádek bude ve skutečnosti použití komponenty `VybaveniRow`. Toto je druhý dobrý důvod proč komponentu používat (první byl, že se kód neplete na jednom místě => je přehlednější). Pro stejnou (podobnou) věc (editace záznamu v tomto případě) není nutné psát kód znovu, ale stačí využít existující komponentu.
+  - Na začátek nastavte tomuto záznamu dnešní datum.
+  - Dále přidejte 2 tlačítka - jedno pro přidání a druhé pro zrušení.
+- Záznam přidejte na začátek seznamu
+
+## RenderFragment a ChildContent -> Jak z vnějšku ovlivnit komponentu
+
+- Znovu využití komponenty s sebou nese i pár nástrah. Například by bylo vhodné, kdyby tlačítka u nového záznamu měla text "přidej" místo "Ok/Uprav"
+- Pomocí property typu `RenderFragment` je možné vyrendrovat určitou část komponenty, která se mění z vnějšku. 
+
+```csharp
+[Parameter] public RenderFragment? ChildContent { get; set; }
+```
+
+- Vlastnost typu `RenderFragment` se v tomto případě jmenuje `ChildContent`. Je možné je využít následujícím způsobem:
+
+```razor 
+<VybaveniRow Item=newModel>
+    <button @onclick="() => {seznamVybaveni.Insert(0,newModel); newModel.IsInEditMode = false; isInNewMode = false;}" class="twbtn bg-teal-500">Přidej</button>
+    <button @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
+</VybaveniRow>
+```
+
+- ChildContent jsou v tomto případě tlačítka. Kam se v komponentě `VybaveniRow` vyrenderují záleží na umístění `@ChildContent`.
+
+```razor
+ @if (ChildContent == null)
+ {
+     <button @onclick="() => Item.IsInEditMode = false" class="border-[1px] border-amber-600 rounded-sm text-sm px-2 py-1">Ok</button>
+ }
+ else
+ {
+     @ChildContent
+ }
+```
+
+- Pokud je `ChildContent` null (nic mu nebylo nastaveno), tak se přidá tlačítko "Ok". V případě, že nějaký `ChildContent` existuje, tak se vypíše ten.
+
+![](media/render_fragment.png)
+
+- (Poznámka) Název ChildContent není povinný. V případě potřeby je možné mít vícero RederFragment vlastností (a všechny se nemohou jmenovat ChildContent). Nicméně s názvem ChildContent je možné psát HTML rovnou to tagu komponenty. V případě:
+
+```csharp
+[Parameter] public RenderFragment? NecoUvnitr { get; set; }
+```
+
+je nutné uvést otevírací i zavírací tag fragmentu:
+
+```razor 
+<VybaveniRow Item=newModel>
+  <NecoUvnitr>
+    <button @onclick="() => {seznamVybaveni.Insert(0,newModel); newModel.IsInEditMode = false; isInNewMode = false;}" class="twbtn bg-teal-500">Přidej</button>
+    <button @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
+  </NecoUvnitr>
+</VybaveniRow>
+```
