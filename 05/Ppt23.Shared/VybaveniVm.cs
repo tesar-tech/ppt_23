@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ppt23.Client.ViewModels;
+namespace Ppt23.Shared;
 
 public class VybaveniVm
 {
@@ -10,7 +10,6 @@ public class VybaveniVm
     public DateTime BoughtDateTime { get; set; }
     public DateTime LastRevisionDateTime { get; set; }
 
-    public bool IsInEditMode { get; set; }
 
     public static List<VybaveniVm> VratRandSeznam(int pocet)
     {

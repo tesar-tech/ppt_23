@@ -286,6 +286,21 @@ public void MapTo(VybaveniVm? to)
   - Na začátek nastavte tomuto záznamu dnešní datum.
   - Dále přidejte 2 tlačítka - jedno pro přidání a druhé pro zrušení.
 - Záznam přidejte na začátek seznamu
+- Dejte pryč `IsInEditMode` z `VybaveniVm`. Vytvořte parametr ve `VybaveniRow`:
+ 
+  ```csharp
+  [Parameter] public bool IsInEditMode { get; set; }
+  ```
+  - tento parametr použijeme, abychom komponentě vnutili editaci, je k tomu potřeba(`VybaveniRow`):
+    
+    ```razor
+    @{
+    if (vybaveni == null && IsInEditMode)
+        ZapniEditMode();
+    }
+    ```
+- Přidejte do `VybaveniRow` `EditDoneEventCallback` a zavolejte ho pokaždé, když je editace hotová.
+  - tímto způsobem odchytneme data při přidávání (viz níže jak).
 
 ## RenderFragment a ChildContent -> Jak z vnějšku ovlivnit komponentu
 
@@ -299,23 +314,41 @@ public void MapTo(VybaveniVm? to)
 - Vlastnost typu `RenderFragment` se v tomto případě jmenuje `ChildContent`. Je možné je využít následujícím způsobem:
 
 ```razor 
-<VybaveniRow Item=newModel>
-    <button @onclick="() => {seznamVybaveni.Insert(0,newModel); newModel.IsInEditMode = false; isInNewMode = false;}" class="twbtn bg-teal-500">Přidej</button>
-    <button @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
-</VybaveniRow>
+
+   <button class="twbtn bg-sky-500" @onclick="()=> {newModel = new();isInNewMode = true;}">
+        Nový kus
+    </button>
+
+ @if (isInNewMode)
+    {
+        ArgumentNullException.ThrowIfNull(newModel);//zařídí tlačítko Nový kus
+
+        <VybaveRow IsInEditMode=true Vyb="newModel" EditDoneEventCallback="() => {seznamVybaveni.Insert(0,newModel); isInNewMode = false;}">
+            <button type="submit" class="twbtn bg-teal-500">Přidej</button>
+            <button type="button" @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
+        </VybaveRow>
+    }
 ```
+
+- Potřebuje zařídit, že v případě 
+
 
 - ChildContent jsou v tomto případě tlačítka. Kam se v komponentě `VybaveniRow` vyrenderují záleží na umístění `@ChildContent`.
 
 ```razor
- @if (ChildContent == null)
- {
-     <button @onclick="() => Item.IsInEditMode = false" class="border-[1px] border-amber-600 rounded-sm text-sm px-2 py-1">Ok</button>
- }
- else
- {
-     @ChildContent
- }
+  @if (ChildContent == null)
+{
+    <button type="submit" class="bg-amber-500 twbtn">
+        Ok
+    </button>
+    <button @onclick="() => IsInEditMode = false" class="bg-gray-500 twbtn">
+        zruš
+    </button>
+}
+else
+{
+    @ChildContent
+}
 ```
 
 - Pokud je `ChildContent` null (nic mu nebylo nastaveno), tak se přidá tlačítko "Ok". V případě, že nějaký `ChildContent` existuje, tak se vypíše ten.
