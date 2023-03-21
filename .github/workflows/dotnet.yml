@@ -30,7 +30,7 @@ jobs:
         # Get a list of folders in the current directory sorted by name in reverse order
         folders=$(ls -d */ | sort -r)
         # Set the latest folder as an environment variable
-        latest_folder=${folders%%/}
+        latest_folder=${folders%%/*}
         echo "LATEST_FOLDER=$latest_folder" >> $GITHUB_ENV
     - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
       run: dotnet publish  ${env.LATEST_FOLDER}/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
