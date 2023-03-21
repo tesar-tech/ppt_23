@@ -15,7 +15,7 @@ jobs:
 
   deploy-to-github-pages:
     permissions:
-      contents: write # může zapisovat do repozitáže
+      contents: write # může zapisovat do repozitáže (v tomto případě do větve gh-pages)
     runs-on: ubuntu-latest # use ubuntu-latest image to run steps on
     steps:
     # uses GitHub's checkout action to checkout code form the master branch
@@ -23,9 +23,16 @@ jobs:
     - name: Nastavení .NET # stáhneme a nastavíme dotnet (není součástí základní instalace ubuntu)
       uses: actions/setup-dotnet@v1 #externí "action", její zdroják je https://github.com/actions/setup-dotnet
       with:
-        dotnet-version: 7.0.103 #verze
+        dotnet-version: 7.0.103 #verze dotnetu
+    - name: Determine latest folder # 01,02, atd - najde poslední cvičení
+      id: latest_folder
+      run: |
+        # Get a list of folders in the current directory sorted by name in reverse order
+        folders=$(ls -d */ | sort -r)
+        # Set the latest folder as an environment variable
+        echo "::set-env name=LATEST_FOLDER::${folders%%/}"
     - name: Publish with dotnet #do určené složky publikuje aplikace, v release configuraci
-      run: dotnet publish 03/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
+      run: dotnet publish  ${env.LATEST_FOLDER}/Ppt23.Client.sln --configuration Release --output ${{env.PUBLISH_DIR}}
       # ☝️ Upravte dle názvu vašeho .sln
 
     # změní tag base v index.html from '/' na 'ppt_22' což je gh page k tomuto repu
@@ -34,16 +41,16 @@ jobs:
       # ☝️ Upravte  dle názvu vašeho repozitáře
 
       
-    # přidá .nojekyll, čímž říká gh pages, že toto není jekkyl projekt (jinak to nedovolí soubor s podtržítkem)
-    - name: Add .nojekyll file
-      run: touch ${{env.PUBLISH_DIR}}/wwwroot/.nojekyll    
+    ## přidá .nojekyll, čímž říká gh pages, že toto není jekkyl projekt (jinak to nedovolí soubor s podtržítkem)
+    #- name: Add .nojekyll file
+    #  run: touch ${{env.PUBLISH_DIR}}/wwwroot/.nojekyll    
     
     - name: copy index.html to 404.html
       run: cp ${{env.PUBLISH_DIR}}/wwwroot/index.html ${{env.PUBLISH_DIR}}/wwwroot/404.html  
       
     # tato akce zařídí přenesení obsahu wwwroot složky to samostatné větve s názvem gh-pages
     # posléze je nutné nastavit v Settings -> Project větev gh-pages jako zdroj pro stránky
-    - name: Commit wwwroot to GitHub Pages 
+    - name: Deploy to GitHub Pages 
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         FOLDER: ${{env.PUBLISH_DIR}}/wwwroot #tady máme vypublikovanou celou aplikaci a ta bude v kořenovém adresáři ve větvi gh-pages
