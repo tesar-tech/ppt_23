@@ -8,9 +8,13 @@
     <link href="css/app.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" href="icons8-sword-80.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <!-- If you add any scoped CSS files, uncomment the following to load them
-    <link href="Ppt23.Client.styles.css" rel="stylesheet" /> -->
+    <style type="text/tailwindcss">
+        @layer components {
+            .twbtn {
+                @apply py-1.5 px-4 text-center text-white hover:opacity-80 hover:text-neutral-100 rounded-md focus:ring-2 focus:ring-opacity-75 focus:outline-none;
+            }
+        }
+    </style>
 </head>
 
 <body>
