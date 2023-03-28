@@ -20,18 +20,16 @@ app.UseHttpsRedirection();
 
 List<VybaveniVm> seznamVybaveni = VybaveniVm.VratRandSeznam(10);
 
-app.MapGet("/vybaveni", () =>
-{
-    return seznamVybaveni;
-});
+app.MapGet("/vybaveni", () => seznamVybaveni);
 
 app.MapGet("/vybaveni/{id}", (Guid id) =>
 {
     VybaveniVm? en = seznamVybaveni.SingleOrDefault(x => x.Id == id);
     if (en is null)
         return Results.NotFound("Item Not Found!");
-    return Results.Json(en);
+    return Results.Ok(en);
 });
+
 
 app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
 {
@@ -39,7 +37,7 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
     seznamVybaveni.Insert(0, prichoziModel);
 });
 
-app.MapPut("/vybaveni/{id}", (VybaveniVm editedModel) =>
+app.MapPut("/vybaveni", (VybaveniVm editedModel) =>
 {
 
     var vybaveniVm_Entity = seznamVybaveni.SingleOrDefault(x => x.Id == editedModel.Id);

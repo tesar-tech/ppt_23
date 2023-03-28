@@ -1,6 +1,13 @@
 ﻿@page "/vybaveni"
 @using Ppt23.Client.Components
+@inject HttpClient Http
 
+
+@if (seznamVybaveni is null)
+{
+<div>Seznam je null</div>    
+return;
+}
 
 
 <div> pocet vybaveni @seznamVybaveni.Count</div>
@@ -52,13 +59,18 @@
 
 
 @code {
-    List<VybaveniVm> seznamVybaveni;
+    List<VybaveniVm>? seznamVybaveni;
     bool isInNewMode;
     VybaveniVm? newModel;
 
     public VybaveniNemocnice()
     {
         seznamVybaveni = VybaveniVm.VratRandSeznam(10);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("vybaveni");
     }
 
 }
