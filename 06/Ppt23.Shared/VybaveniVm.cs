@@ -6,6 +6,7 @@ public class VybaveniVm
 {
     [Required,MinLength(5,ErrorMessage ="Alespoň 5 písmen!")]
     public string Name { get; set; } = "";
+    public Guid Id { get; set; }
     public bool IsRevisionNeeded { get => DateTime.Now.AddYears(-2) < LastRevisionDateTime ; }
     public DateTime BoughtDateTime { get; set; }
     public DateTime LastRevisionDateTime { get; set; }
@@ -18,6 +19,7 @@ public class VybaveniVm
         {
             VybaveniVm model = new()
             {
+                Id = Guid.NewGuid(),
                 Name = RandomString(Random.Shared.Next(5, 25)),
                 BoughtDateTime = DateTime.Now.AddDays(-Random.Shared.Next(3 * 365, 20 * 365)),
                 LastRevisionDateTime = DateTime.Now.AddDays(-Random.Shared.Next(0, 3 * 365)),
