@@ -1,0 +1,15 @@
+﻿@page "/vybaveni/{Id:guid}"
+@inject HttpClient Http
+
+<h3>VybaveniDetail @Id</h3>
+@vybaveni.Name
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    VybaveniVm? vybaveni;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var vyb = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
+    }
+}

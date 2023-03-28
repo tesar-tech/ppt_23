@@ -5,7 +5,9 @@
 
 @if (seznamVybaveni is null)
 {
-<div>Seznam je null</div>    
+    <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
+        <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
+    </div>
 return;
 }
 
@@ -50,7 +52,7 @@ return;
 
     @foreach (VybaveniVm vyb in seznamVybaveni)
     {
-        <VybaveRow Vyb="vyb" SmazEventCallback="() => seznamVybaveni.Remove(vyb)">
+        <VybaveRow Vyb="vyb" SmazEventCallback="() => SmazVybaveni(vyb)">
         </VybaveRow>
     }
 
@@ -63,14 +65,17 @@ return;
     bool isInNewMode;
     VybaveniVm? newModel;
 
-    public VybaveniNemocnice()
-    {
-        seznamVybaveni = VybaveniVm.VratRandSeznam(10);
-    }
-
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(1000);
         seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("vybaveni");
+    }
+
+    async Task SmazVybaveni(VybaveniVm vyb)
+    {
+        var odpoved = await Http.DeleteAsync($"vybaveni/{vyb.Id}");
+        if (odpoved.IsSuccessStatusCode)
+            seznamVybaveni?.Remove(vyb);
     }
 
 }

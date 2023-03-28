@@ -9,6 +9,32 @@ Nyní můžeme API dotazovat pomocí swaggeru. Tuto lekci propojíme klientskou 
 - Results.Json, IResult
 - Lambda zápis a return jednoho řádku
 
+## launchSettings.json
+
+- ve složce Properties
+- specifikuje jak se aplikace spouští
+- změňte soubor tak aby obsahoval jediný profil a to https (ostatní nejsou pro nás potřeba)
+- také změňte adresu, klienta na port 1111, server na port 2222 (https)
+- kompletní `launchSettings.json` pro klienta:
+
+```json
+{
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "vybaveni",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "applicationUrl": "https://localhost:1111",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+```
+
 ## Přidání HTTP klienta v Blazoru
 
 V souboru `Program.cs` je už přidaný klient `HttpClient` do IoC kontejneru. Díky tomu můžeme použít třídu HttpClient aniž bychom se museli starat o její inicializaci a celý životní cyklus (to je IoC - **Inversion of Control**). (Má to další výhody, zejména při automatizovaném testování - o tom více v dalších lekcích).
@@ -16,7 +42,7 @@ V souboru `Program.cs` je už přidaný klient `HttpClient` do IoC kontejneru. D
 Defaultně je adresa http klienta nastavena na stejnou doménu jako jako je běžící aplikace. Jelikož máme aplikaci rozdělenou, můusíme zde specifikovat adresu se kterou bude Blazor aplikace komunikovat. Je to adresa našeho web-api.
 
 ```csharp
-//👇 nahraďte adresou api projektu, například "https://localhost:7058"
+//👇 nahraďte adresou api projektu, například "https://localhost:7058" (bez lomítka na konci !!!)
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 ```
 

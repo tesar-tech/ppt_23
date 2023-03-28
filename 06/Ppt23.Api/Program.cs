@@ -1,4 +1,4 @@
-using Ppt23.Shared;
+﻿using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
+    policy.WithOrigins("https://localhost:1111")//👈
+    .WithMethods("GET", "DELETE")//👈 (musí být UPPERCASE)
+    .AllowAnyHeader()
+));
+//někde za definicí proměnné app
+
 var app = builder.Build();
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,6 +43,7 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
 {
     prichoziModel.Id = Guid.NewGuid();
     seznamVybaveni.Insert(0, prichoziModel);
+    return prichoziModel.Id;
 });
 
 app.MapPut("/vybaveni", (VybaveniVm editedModel) =>
@@ -65,9 +74,6 @@ app.MapDelete("/vybaveni/{id}", (Guid id) =>
     return Results.Ok();
 
 });
-
-
-
 
 
 app.Run();

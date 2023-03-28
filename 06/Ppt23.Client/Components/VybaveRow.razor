@@ -8,7 +8,7 @@
 
 @if (!IsInEditMode)
 {
-    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.Name</div>
+    <a href="" class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")"> @Vyb.Name</a>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.BoughtDateTime.ToString("yyyy-MMM-dd")</div>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
         @Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")
