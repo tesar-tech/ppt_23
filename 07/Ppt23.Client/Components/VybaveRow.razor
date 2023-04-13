@@ -8,7 +8,7 @@
 
 @if (!IsInEditMode)
 {
-    <a href="" class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")"> @Vyb.Name</a>
+    <a href="@($"vybaveni/{Vyb.Id}")" class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"") underline hover:text-xl"> @Vyb.Name</a>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.BoughtDateTime.ToString("yyyy-MMM-dd")</div>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
         @Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")
