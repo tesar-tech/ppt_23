@@ -1,0 +1,37 @@
+﻿@page "/revize/{Pozdrav}"
+@inject HttpClient Http
+
+<h3 class="text-green-500">@Pozdrav</h3>
+
+<input class="border     px-2 py-1 mx-2 rounded" @bind-value="@input"/>
+<button @onclick="()=> VyhledejRevize()" class="bg-teal-500 px-2 py-1 hover:bg-opacity-80">Vyhledej</button>
+
+@if (seznamRevizi is not null)
+{
+<div class="grid grid-cols-2">
+
+    @foreach (var rev in seznamRevizi)
+    {
+        <div>
+        Id: @rev.Id  
+        </div>
+        <div>
+                Nazev: @rev.Name
+            </div>
+    }
+</div>
+}
+@code {
+
+    [Parameter] public string Pozdrav { get; set; } = "";
+    string input = "";
+    List<RevizeVm>? seznamRevizi;
+
+
+    async Task VyhledejRevize()
+    {
+        seznamRevizi = await Http.GetFromJsonAsync<List<RevizeVm>>($"revize/{input}");
+        
+    }
+
+}

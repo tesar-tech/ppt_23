@@ -27,6 +27,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 List<VybaveniVm> seznamVybaveni = VybaveniVm.VratRandSeznam(10);
+List<RevizeVm> seznamRevizi = RevizeVm.VratRandSeznam(100);
 
 app.MapGet("/vybaveni", () => seznamVybaveni);
 
@@ -74,6 +75,15 @@ app.MapDelete("/vybaveni/{id}", (Guid id) =>
     return Results.Ok();
 
 });
+
+
+app.MapGet("/revize/{text}", (string text) =>
+{
+    var filtrovaneRevize = seznamRevizi.Where(x => x.Name.Contains(text)).ToList();
+    return Results.Ok(filtrovaneRevize);
+});
+
+
 
 
 app.Run();
