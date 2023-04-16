@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/${{env.PUBLISH_DIR}}
+          path: ${{env.PUBLISH_DIR}}
 
   deploy:
     runs-on: ubuntu-latest
