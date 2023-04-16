@@ -6,9 +6,7 @@
 - `Shift+F5` - zabije debugging
 - `Ctrl+Shift+F5` - zabije debugging a znovu ho spustí (trochu rychlejší, než to mačkat zvlášť)
 
-## Muliprojekt
-
-## Publikování aplikace do Microsof Azure
+## Publikování aplikace do Microsoft Azure
 
 - Aktuálně nám funguje pouze publikování klientské aplikace na github pages
 - Potřebujeme aby fungovala i serverová část
@@ -22,6 +20,7 @@
 
 ### Publish přes VS
 
+- (pouze informační, takto to dělat nebudeme)
 - VS má celkem pěkný průvodce s téměř veškerým nastavením
   - pravým tlačítkem a dáte publish
   - může vygenerovat pubxml soubor, který obsahuje nastavení pro publikaci
@@ -32,11 +31,11 @@
 
 ### GH Actions 
 
-- vytvoří se commit, na GH actions se apliace zbuildní, pošle se do Azure
+- vytvoří se commit, na GH actions se apliace zbuildní, pošle se do Azure. Jednoduché, když to funguje. Musí se toho dost nastavit (účel tohoto cvičení).
 
 ## Azure App Service
 
-- vytvořte novou App service, zvolte Linux, .net 7 stack, blízkou lokaci (evropu), Free F1 pricing plan
+- vytvořte novou App service, zvolte Linux, .net 7 stack, blízkou lokaci (evropu), Free F1 pricing plan. Ostatní věci jsou skoro jedno. 
 - aplikaci pojmenujte rozumně dlouhým názvem (já jsem dal `ppt23-tesy`)
   - aplikace poběží na doméně `ppt23-tesy.azurewebsites.net`, nicméně jenom api. Touto doménou se aplikace nikde prezentovat nebude
 - Chvíli to trvá, než se aplikace vytvoří
@@ -50,6 +49,7 @@
 - vytvořený .yml je dost podobný tomu který už máme.
 - Soubor je potřeba upravit - upravte na gh, nebo si změny stáhněte na lokál.
   - změňte cestu na api projekt
+  - inspirujte se v mém projektu.
 - Nyní při pushnutí změn se spustí GH action. 
 - Celá magie deploymentu je zde: 
 
@@ -71,5 +71,3 @@
 - Že je Api aplikcae správně nasazená poznáte, že přistoupíte na její doménu/vybavení (např. https://ppt23-tesy.azurewebsites.net/vybaveni ). Mělo by to kontaktovat Get endpoint vybavní a vrátit json, který prohlížeč zobrazí.
   ![](media/vybaveniendpoint.png) 
 - Blazor aplikce nasazané na GH pages však nezná API url a nemůže tedy s api komunikovat. To vyřešíme příště. 
-
-
