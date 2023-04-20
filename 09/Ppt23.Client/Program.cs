@@ -6,6 +6,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:2222") });
+var httpClientBaseAddress = builder.Configuration["HttpClientBaseAddress"];
+ArgumentNullException.ThrowIfNull(httpClientBaseAddress);
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(httpClientBaseAddress) });
 
 await builder.Build().RunAsync();
