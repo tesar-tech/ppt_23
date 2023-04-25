@@ -1,4 +1,4 @@
-# 10 -  Databáze, SQLite, EntityFramework, Mapster, Migrace
+# 10 -  Databáze, SQLite, EntityFramework, Migrace, Mapster
 
 ## Multiple startup projects
 
@@ -26,8 +26,9 @@
 - (opt2) V Package Manageru (okno ve VS): `Install-Package Microsoft.EntityFrameworkCore`, nebo
 - (opt3) Manuálně v VS: pravým na projekt -> Manage Nuget Packages -> Najít a instalovat.
 
-- To samé pro SQLite
+- To samé pro SQLite a pro Microsoft.EntityFrameworkCore.Design:
   - `dotnet add package Microsoft.EntityFrameworkCore.Sqlite`
+  - `dotnet add package Microsoft.EntityFrameworkCore.Design`
 
 - Jenom se tím upraví .csproj soubor
 
@@ -103,8 +104,8 @@
 #### Jak si prohlédnout databázi
 
 - Existuje spousta jednoduchých programů na prohlížení SQLite databází.
-  - Například tento [online](https://sqliteviewer.app)
-  - nebo pro Windows: `winget install -e --id DBBrowserForSQLite.DBBrowserForSQLite` ([gh](https://github.com/sqlitebrowser/sqlitebrowser))
+  - Například: https://github.com/sqlitebrowser/sqlitebrowser
+    - Windows: `winget install -e --id DBBrowserForSQLite.DBBrowserForSQLite` 
 - Po otevření databáze to bude vypadat přibližně takto:
 
   ![](media/dbbrowser.png)
@@ -113,8 +114,7 @@
 ### Dotazování databáze
 
 - Je to skoro stejné jako dotazování "databáze" z proměnné. (A v tom je celé kouzlo a přínos EF)
-- Nicméně třída, kterou vytáhneme z db (`Vybaveni`) je jiná než třída, kterou chceme poslat v jsonu (`VybaveniViewModel`).
-
+- Nicméně třída, kterou vytáhneme z db (`Vybaveni`) je jiná než třída, kterou chceme poslat v jsonu (`VybaveniVm`).
 
 ### Přidání všech sloupců do tabulky
 
@@ -137,8 +137,8 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext _db) =>
         PriceCzk = prichoziModel.PriceCzk};
 
     //přidat do db.Vybavenis
-    //uložit db (db.Save)
-    return prichoziModel.Id;
+    //uložit db (db.Save) //tím se vytvoří Id (místo samých nul)
+    return en.Id;
 });
 
 ```
@@ -159,6 +159,9 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext _db) =>
 
 ## Dále
 
+- Přidejte `mojeDatabaze.db`, `mojeDatabaze.db-shm` a `mojeDatabaze.db-wal` do .gitignore
+  - ve VS pravým klikem -> Git -> gitingore
+
 - Dodělejte všechny ostatní endpointy vybavení, tak aby využívaly databázi.
   - Využijte Mapster (i když to bude fungovat i bez něj (ale časem už moc nebude))
   - Vyčistěte kód od `seznamVybaveni` (už není potřeba).
@@ -167,6 +170,4 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext _db) =>
 - Endpoint revize (ten, který byl přidán v testu) upravte tak aby fungoval s daty z databáze
   - (žádná data tam ale zatím nejsou)
   - Odstrňte všechen zbytečný kód týkající se revizí.
-- Dodělejte `Loader` komponentu (pokud nemáte).
 - Stáhněte si zmíněný prohlížeč SQLite databáze (a nebo jakýkoliv jiný). Přidejte data do revizí, ať vám endpoint funguje.
-

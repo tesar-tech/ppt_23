@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Ppt23.Api.Data;
 using Ppt23.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,13 +14,14 @@ builder.Services.AddSwaggerGen();
 var corsAllowedOrigin = builder.Configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
 ArgumentNullException.ThrowIfNull(corsAllowedOrigin);
 
-Console.WriteLine($" CORS ALLOWED: {corsAllowedOrigin}");
-
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     policy.WithOrigins(corsAllowedOrigin)//👈
     .WithMethods("GET","DELETE","POST","PUT")//👈 (musí být UPPERCASE)
     .AllowAnyHeader()
 ));
+
+
+builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=mojeDatabaze.db"));
 //někde za definicí proměnné app
 
 var app = builder.Build();
@@ -35,7 +39,11 @@ app.UseHttpsRedirection();
 List<VybaveniVm> seznamVybaveni = VybaveniVm.VratRandSeznam(10);
 List<RevizeVm> seznamRevizi = RevizeVm.VratRandSeznam(100);
 
-app.MapGet("/vybaveni", () => seznamVybaveni);
+app.MapGet("/vybaveni", ( PptDbContext db) =>
+{
+    List<VybaveniVm> destinations = db.Vybavenis.ProjectToType<VybaveniVm>().ToList();
+    return destinations;
+});
 
 app.MapGet("/vybaveni/{id}", (Guid id) =>
 {
@@ -45,17 +53,18 @@ app.MapGet("/vybaveni/{id}", (Guid id) =>
     return Results.Ok(en);
 });
 
-
-app.MapPost("/vybaveni", (VybaveniVm prichoziModel) =>
+app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext db) =>
 {
-    prichoziModel.Id = Guid.NewGuid();
-    seznamVybaveni.Insert(0, prichoziModel);
-    return prichoziModel.Id;
+    prichoziModel.Id = Guid.Empty;
+    var en = prichoziModel.Adapt<Vybaveni>();
+    db.Vybavenis.Add(en);
+    db.SaveChanges();
+    return en.Id;
 });
+
 
 app.MapPut("/vybaveni", (VybaveniVm editedModel) =>
 {
-
     var vybaveniVm_Entity = seznamVybaveni.SingleOrDefault(x => x.Id == editedModel.Id);
     if (vybaveniVm_Entity == null)
         return Results.NotFound("Item Not Found!");
@@ -67,7 +76,6 @@ app.MapPut("/vybaveni", (VybaveniVm editedModel) =>
 
         return Results.Ok();
     }
-
 });
 
 
@@ -82,16 +90,10 @@ app.MapDelete("/vybaveni/{id}", (Guid id) =>
 
 });
 
-
 app.MapGet("/revize/{text}", (string text) =>
 {
     var filtrovaneRevize = seznamRevizi.Where(x => x.Name.Contains(text)).ToList();
     return Results.Ok(filtrovaneRevize);
 });
 
-
-
-
 app.Run();
-
-

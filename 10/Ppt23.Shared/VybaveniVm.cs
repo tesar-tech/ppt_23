@@ -11,6 +11,8 @@ public class VybaveniVm
     public DateTime BoughtDateTime { get; set; }
     public DateTime LastRevisionDateTime { get; set; }
 
+    public int PriceCzk { get; set; }
+
 
     public static List<VybaveniVm> VratRandSeznam(int pocet)
     {
