@@ -1,0 +1,81 @@
+﻿@page "/vybaveni"
+@using Ppt23.Client.Components
+@inject HttpClient Http
+
+
+@if (seznamVybaveni is null)
+{
+    <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
+        <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
+    </div>
+return;
+}
+
+
+<div> pocet vybaveni @seznamVybaveni.Count</div>
+
+
+
+
+<div class="flex gap-2">
+    <button class="twbtn bg-violet-500" @onclick="()=> seznamVybaveni = VybaveniVm.VratRandSeznam(10)">
+
+        Nový seznam
+    </button>
+
+    <button class="twbtn bg-sky-500" @onclick="()=> {newModel = new();isInNewMode = true;}">
+        Nový kus
+    </button>
+
+</div>
+
+
+
+<div class="bg-green-500 grid grid-cols-[1fr_1fr_1fr_auto] gap-y-5">
+    <label>Název</label>
+    <label>Datum Nákupu</label>
+    <label>Poslední Revize</label>
+    <label>Akce</label>
+
+
+
+
+    @if (isInNewMode)
+    {
+        ArgumentNullException.ThrowIfNull(newModel);//zařídí tlačítko Nový kus
+
+        <VybaveRow IsInEditMode=true Vyb="newModel" EditDoneEventCallback="() => {seznamVybaveni.Insert(0,newModel); isInNewMode = false;}">
+            <button type="submit" class="twbtn bg-teal-500">Přidej</button>
+            <button type="button" @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
+        </VybaveRow>
+    }
+
+    @foreach (VybaveniVm vyb in seznamVybaveni)
+    {
+        <VybaveRow Vyb="vyb" SmazEventCallback="() => SmazVybaveni(vyb)">
+        </VybaveRow>
+    }
+
+</div>
+
+
+
+@code {
+    List<VybaveniVm>? seznamVybaveni;
+    bool isInNewMode;
+    VybaveniVm? newModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+        seznamVybaveni = await Http.GetFromJsonAsync<List<VybaveniVm>>("vybaveni");
+    }
+
+    async Task SmazVybaveni(VybaveniVm vyb)
+    {
+        var odpoved = await Http.DeleteAsync($"vybaveni/{vyb.Id}");
+        if (odpoved.IsSuccessStatusCode)
+            seznamVybaveni?.Remove(vyb);
+    }
+
+}

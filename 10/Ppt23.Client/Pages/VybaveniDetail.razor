@@ -1,0 +1,22 @@
+﻿@page "/vybaveni/{Id:guid}"
+@inject HttpClient Http
+
+@if (vybaveni == null)
+    return;
+
+<div class="text-2xl text-teal-600 mx-3 my-2">Detail vybaveni</div>
+
+<div class="grid grid-cols-2">
+    <div>Název</div>
+    <div>@vybaveni.Name</div>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    VybaveniVm? vybaveni;
+
+    protected override async Task OnInitializedAsync()
+    {
+        vybaveni = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
+    }
+}
