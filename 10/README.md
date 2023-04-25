@@ -1,4 +1,4 @@
-# 10 -  Databáze, SQLite, EntityFramework, AutoMapper, Migrace
+# 10 -  Databáze, SQLite, EntityFramework, Mapster, Migrace
 
 ## Multiple startup projects
 
@@ -104,7 +104,7 @@
 
 - Existuje spousta jednoduchých programů na prohlížení SQLite databází.
   - Například tento [online](https://sqliteviewer.app)
-  - nebo pro Windows: `winget install -e --id DBBrowserForSQLite.DBBrowserForSQLite`
+  - nebo pro Windows: `winget install -e --id DBBrowserForSQLite.DBBrowserForSQLite` ([gh](https://github.com/sqlitebrowser/sqlitebrowser))
 - Po otevření databáze to bude vypadat přibližně takto:
 
   ![](media/dbbrowser.png)
