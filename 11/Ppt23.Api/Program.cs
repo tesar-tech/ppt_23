@@ -25,7 +25,7 @@ builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=mojeD
 //někde za definicí proměnné app
 
 var app = builder.Build();
-await app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>().Database.MigrateAsync();
+//await app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>().Database.MigrateAsync();
 
 app.UseCors();
 
