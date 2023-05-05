@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Ppt23.Api.Data;
 using Ppt23.Shared;
 
@@ -25,7 +26,7 @@ builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=mojeD
 //někde za definicí proměnné app
 
 var app = builder.Build();
-//await app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>().Database.MigrateAsync();
+
 
 app.UseCors();
 
@@ -98,4 +99,16 @@ app.MapGet("/revize/{text}", (string text) =>
     return Results.Ok(filtrovaneRevize);
 });
 
+using var scope = app.Services.CreateScope();
+using var appContext = scope.ServiceProvider.GetRequiredService<PptDbContext>();
+try
+{
+appContext.Database.Migrate();
+
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Exception during db migration {ex.Message}");
+    //throw;
+}
 app.Run();
