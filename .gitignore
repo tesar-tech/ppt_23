@@ -35,6 +35,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
-/10/Ppt23.Api/mojeDatabaze.db-shm
-/10/Ppt23.Api/mojeDatabaze.db-wal
-/10/Ppt23.Api/mojeDatabaze.db
+*.db-shm
+*.db-wal
+*.mojeDatabaze.db

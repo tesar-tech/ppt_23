@@ -21,8 +21,9 @@ builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     .AllowAnyHeader()
 ));
 
-
-builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite("FileName=mojeDatabaze.db"));
+string? sqliteDbPath =  builder.Configuration[nameof(sqliteDbPath)] ;
+ArgumentNullException.ThrowIfNull(sqliteDbPath);
+builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite($"FileName={sqliteDbPath}"));
 //někde za definicí proměnné app
 
 var app = builder.Build();
