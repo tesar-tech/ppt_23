@@ -17,11 +17,11 @@ ArgumentNullException.ThrowIfNull(corsAllowedOrigin);
 
 builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(policy =>
     policy.WithOrigins(corsAllowedOrigin)//👈
-    .WithMethods("GET","DELETE","POST","PUT")//👈 (musí být UPPERCASE)
+    .WithMethods("GET", "DELETE", "POST", "PUT")//👈 (musí být UPPERCASE)
     .AllowAnyHeader()
 ));
 
-string? sqliteDbPath =  builder.Configuration[nameof(sqliteDbPath)] ;
+string? sqliteDbPath = builder.Configuration[nameof(sqliteDbPath)];
 ArgumentNullException.ThrowIfNull(sqliteDbPath);
 builder.Services.AddDbContext<PptDbContext>(opt => opt.UseSqlite($"FileName={sqliteDbPath}"));
 //někde za definicí proměnné app
@@ -43,7 +43,7 @@ app.UseHttpsRedirection();
 List<VybaveniVm> seznamVybaveni = VybaveniVm.VratRandSeznam(10);
 List<RevizeVm> seznamRevizi = RevizeVm.VratRandSeznam(100);
 
-app.MapGet("/vybaveni", ( PptDbContext db) =>
+app.MapGet("/vybaveni", (PptDbContext db) =>
 {
     List<VybaveniVm> destinations = db.Vybavenis.ProjectToType<VybaveniVm>().ToList();
     return destinations;
@@ -67,29 +67,25 @@ app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext db) =>
 });
 
 
-app.MapPut("/vybaveni", (VybaveniVm editedModel) =>
+app.MapPut("/vybaveni", (VybaveniVm editedModel, PptDbContext db) =>
 {
-    var vybaveniVm_Entity = seznamVybaveni.SingleOrDefault(x => x.Id == editedModel.Id);
-    if (vybaveniVm_Entity == null)
-        return Results.NotFound("Item Not Found!");
-    else
-    {
-        vybaveniVm_Entity.BoughtDateTime = editedModel.BoughtDateTime;
-        vybaveniVm_Entity.LastRevisionDateTime = editedModel.LastRevisionDateTime;
-        vybaveniVm_Entity.Name = editedModel.Name;
+    var en = db.Vybavenis.SingleOrDefault(x => x.Id == editedModel.Id);
 
-        return Results.Ok();
-    }
+    if (en == null)
+        return Results.NotFound("Item Not Found!");
+    editedModel.Adapt(en);
+    db.SaveChanges();
+    return Results.Ok();
 });
 
 
-app.MapDelete("/vybaveni/{id}", (Guid id) =>
+app.MapDelete("/vybaveni/{id}", (Guid id, PptDbContext db) =>
 {
-    var item = seznamVybaveni.SingleOrDefault(x => x.Id == id);
-    if (item == null)
+    var en = db.Vybavenis.SingleOrDefault(x => x.Id == id);
+    if (en == null)
         return Results.NotFound("Item Not Found!");
-    seznamVybaveni.Remove(item);
-
+    db.Vybavenis.Remove(en);
+    db.SaveChanges();
     return Results.Ok();
 
 });
@@ -100,12 +96,10 @@ app.MapGet("/revize/{text}", (string text) =>
     return Results.Ok(filtrovaneRevize);
 });
 
-using var scope = app.Services.CreateScope();
-using var appContext = scope.ServiceProvider.GetRequiredService<PptDbContext>();
+using var appContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>();
 try
 {
-appContext.Database.Migrate();
-
+    appContext.Database.Migrate();
 }
 catch (Exception ex)
 {

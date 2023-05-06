@@ -8,7 +8,7 @@
     <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
         <div class=" border-t-transparent border-solid animate-spin  rounded-full border-teal-600 border-8 h-16 w-16"></div>
     </div>
-return;
+    return;
 }
 
 
@@ -44,7 +44,7 @@ return;
     {
         ArgumentNullException.ThrowIfNull(newModel);//zařídí tlačítko Nový kus
 
-        <VybaveRow IsInEditMode=true Vyb="newModel" EditDoneEventCallback="() => {seznamVybaveni.Insert(0,newModel); isInNewMode = false;}">
+        <VybaveRow IsInEditMode=true Vyb="newModel" EditDoneEventCallback="async () => await PridejVybaveni(newModel)">
             <button type="submit" class="twbtn bg-teal-500">Přidej</button>
             <button type="button" @onclick="() => isInNewMode = false" class="twbtn bg-yellow-500">Zrušit</button>
         </VybaveRow>
@@ -52,7 +52,7 @@ return;
 
     @foreach (VybaveniVm vyb in seznamVybaveni)
     {
-        <VybaveRow Vyb="vyb" SmazEventCallback="() => SmazVybaveni(vyb)">
+        <VybaveRow Vyb="vyb"  SmazEventCallback="() => SmazVybaveni(vyb)">
         </VybaveRow>
     }
 
@@ -76,6 +76,19 @@ return;
         var odpoved = await Http.DeleteAsync($"vybaveni/{vyb.Id}");
         if (odpoved.IsSuccessStatusCode)
             seznamVybaveni?.Remove(vyb);
+    }
+
+
+
+    async Task PridejVybaveni(VybaveniVm vyb)
+    {
+        var odpoved = await Http.PostAsJsonAsync("vybaveni", vyb);
+        if (odpoved.IsSuccessStatusCode)
+        {
+            seznamVybaveni?.Insert(0, vyb);
+            isInNewMode = false;
+            vyb.Id = await odpoved.Content.ReadFromJsonAsync<Guid>();
+        }
     }
 
 }

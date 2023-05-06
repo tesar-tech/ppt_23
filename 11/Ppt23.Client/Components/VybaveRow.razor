@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
 @if (Vyb == null) return;
 
 @{
@@ -30,7 +32,7 @@
         </button>
     </div>
 }
-else if(vybaveni !=null) //je v editacnim modu
+else if (vybaveni != null) //je v editacnim modu
 {
     <EditForm class="col-span-4 grid gap-x-2 grid-cols-[auto_fr] max-w-sm" Model=vybaveni OnValidSubmit="() => OnValidSubmit()">
         <DataAnnotationsValidator />
@@ -77,13 +79,19 @@ else
 
 
 
-    private void OnValidSubmit()
+    private async Task OnValidSubmit()
     {
         ArgumentNullException.ThrowIfNull(vybaveni);
+        if (vybaveni.Id != Guid.Empty)
+        {//non-empty id? => update, otherwise create (which is handeled in VybaveniNemocnice.razor)
+            var odpoved = await Http.PutAsJsonAsync("vybaveni", vybaveni);
+            if (!odpoved.IsSuccessStatusCode)
+                return;
+        }
         IsInEditMode = false;
         Vyb.Name = vybaveni.Name;
         Vyb.BoughtDateTime = vybaveni.BoughtDateTime;
-        EditDoneEventCallback.InvokeAsync();
+        await EditDoneEventCallback.InvokeAsync();
     }
 
 
@@ -92,6 +100,7 @@ else
         IsInEditMode = true;
         vybaveni = new()
             {
+                Id = Vyb.Id,
                 Name = Vyb.Name,
                 BoughtDateTime = Vyb.BoughtDateTime,
             };
