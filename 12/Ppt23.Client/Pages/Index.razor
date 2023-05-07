@@ -1,0 +1,27 @@
+﻿@page "/"
+
+<h1>ahOJ, Světe!</h1>
+<div>AHAH</div>
+<input  />
+
+
+<button @onclick="Hadam">
+    Hadej 
+</button>
+
+<span style="background:red">@v</span>
+
+@code
+{
+    int v = 2;
+
+    void Hadam()
+    {
+        v = 4;
+    }
+
+    protected override void OnInitialized()
+    {
+        //
+    }
+}
