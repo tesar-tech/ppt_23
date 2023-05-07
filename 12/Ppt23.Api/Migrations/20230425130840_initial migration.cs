@@ -11,7 +11,6 @@ namespace Ppt23.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("PRAGMA journal_mode=wal;");
             migrationBuilder.CreateTable(
                 name: "Vybavenis",
                 columns: table => new

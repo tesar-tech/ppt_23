@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Ppt23.Api.Data;
@@ -99,6 +100,8 @@ app.MapGet("/revize/{text}", (string text) =>
 using var appContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>();
 try
 {
+    appContext.Database.OpenConnection();
+    appContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=wal;");
     appContext.Database.Migrate();
 }
 catch (Exception ex)
