@@ -100,8 +100,8 @@ app.MapGet("/revize/{text}", (string text) =>
 using var appContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>();
 try
 {
-    //appContext.Database.OpenConnection();
-    //appContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=wal;");
+    appContext.Database.OpenConnection();
+    appContext.Database.ExecuteSqlRaw("PRAGMA journal_mode=wal;");
     appContext.Database.Migrate();
 }
 catch (Exception ex)

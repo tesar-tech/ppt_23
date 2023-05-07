@@ -7,7 +7,7 @@ V principu by to němlo být složité. SQLite databáze je stavěná tak, aby n
 I přes to je potřeba vyřešit několik věcí:
 
 - Data musí být jiná než v databázi na vývoj. Nemůžeme mít databázi na vývoj a pokaždé ji pushnut přes git/nasadit na hosting. (v principu by to fungovalo, ale bylo by to k ničemu).
-- Data v databázi musí zůstat i při nasazení nové verze aplikace
+- Data v databázi musí zůstat i při nasazení nové verze aplikace.
 - Musíme být schopni zařídit bezešvé migrování databáze v případě, že se objeví nové EF migrace.
 
 Řešení:
@@ -31,7 +31,7 @@ Problém:
 Řešení je několik možných:
 
 - Využívat jinou službu pro skladování souborů. Azure Files nebo Azure Blob storage. Namountovat k tomu cestu přes Azure App Service. Správné řešení, ale bohužel školní licence neumožňuje tyto služby využívat. Resp. nejde je využívat zdarma.
-- Druhé řešení: Dát databázi jinam než vedle dllek. Například do kořenového adresáře celého linuxového stroje (`/`). Není to ideální, ale naším účelům to postačí.
+- Druhé řešení: Dát databázi jinam než vedle dllek. Například do kořenového adresáře celého linuxového stroje (`/`). Není to ideální, ale naším účelům to postačí. Bohužel toto řešení neplní podmínku "data musí zůstat i po nasazení nové verze aplikace". Zkoušel jsem další možná řešení, ale na nic rozumného jsem nepřišel. Rozhodně to není production-ready. Nicméně nyní to takto uděláme.
 
 ## Jiná lokace databáze v produkci
 
@@ -46,4 +46,4 @@ Ve výsledku je to jednoduché.
 - Migrujte db v C# kódu
 - Změňte lokaci db pro produkci.
 
-Vyzkoušejte přidání/upravení záznamu. Záznamy by měly vydržet jak přes refresh prohlížeče, tak při restartování aplikace, tak i při nasazení nové verze aplikace.
+Vyzkoušejte přidání/upravení záznamu. Záznamy by měly vydržet jak přes refresh prohlížeče, tak při restartování aplikace, tak i při ~~nasazení nové verze aplikace~~.
