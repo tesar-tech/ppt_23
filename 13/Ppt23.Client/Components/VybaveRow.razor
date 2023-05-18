@@ -1,0 +1,109 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+@if (Vyb == null) return;
+
+@{
+    if (vybaveni == null && IsInEditMode)
+        ZapniEditMode();
+}
+
+@if (!IsInEditMode)
+{
+    <a href="@($"vybaveni/{Vyb.Id}")" class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"") underline hover:text-xl"> @Vyb.Name</a>
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.BoughtDateTime.ToString("yyyy-MMM-dd")</div>
+    <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
+        @Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")
+        @(Vyb.IsRevisionNeeded ? "❌" : "✅")
+    </div>
+
+
+    <div class="flex gap-2">
+
+        <button @onclick="() => Vyb.LastRevisionDateTime = DateTime.Now" class="bg-sky-500 twbtn">
+            Provést revizi
+        </button>
+
+        <button @onclick="() => SmazEventCallback.InvokeAsync()" class="bg-red-500 twbtn ">
+            Smaž to
+        </button>
+        <button @onclick="() => ZapniEditMode()" class="bg-amber-500 twbtn">
+            Uprav to
+        </button>
+    </div>
+}
+else if (vybaveni != null) //je v editacnim modu
+{
+    <EditForm class="col-span-4 grid gap-x-2 grid-cols-[auto_fr] max-w-sm" Model=vybaveni OnValidSubmit="() => OnValidSubmit()">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="col-span-2 text-red-500 font-bold" />
+
+        <label>Název</label>
+        <InputText class="border-2 border-slate-300" @bind-Value=vybaveni.Name />
+        <label>Datum zakoupení</label>
+
+        <input class="border-2 border-slate-300" type="date" @bind-value=vybaveni.BoughtDateTime />
+
+        <div class="flex col-span-2 gap-2">
+
+            @if (ChildContent == null)
+            {
+                <button type="submit" class="bg-amber-500 twbtn">
+                    Ok
+                </button>
+                <button @onclick="() => IsInEditMode = false" class="bg-gray-500 twbtn">
+                    zruš
+                </button>
+            }
+            else
+            {
+                @ChildContent
+            }
+        </div>
+    </EditForm>
+}
+else
+{
+    <div>Smthing's wrong! ❌</div>
+}
+
+
+@code {
+    [Parameter, EditorRequired]
+    public VybaveniVm Vyb { get; set; } = null!;
+    VybaveniVm? vybaveni;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsInEditMode { get; set; }
+    [Parameter] public EventCallback SmazEventCallback { get; set; }
+    [Parameter] public EventCallback EditDoneEventCallback { get; set; }
+
+
+
+    private async Task OnValidSubmit()
+    {
+        ArgumentNullException.ThrowIfNull(vybaveni);
+        if (vybaveni.Id != Guid.Empty)
+        {//non-empty id? => update, otherwise create (which is handeled in VybaveniNemocnice.razor)
+            var odpoved = await Http.PutAsJsonAsync("vybaveni", vybaveni);
+            if (!odpoved.IsSuccessStatusCode)
+                return;
+        }
+        IsInEditMode = false;
+        Vyb.Name = vybaveni.Name;
+        Vyb.BoughtDateTime = vybaveni.BoughtDateTime;
+        await EditDoneEventCallback.InvokeAsync();
+    }
+
+
+    void ZapniEditMode()
+    {
+        IsInEditMode = true;
+        vybaveni = new()
+            {
+                Id = Vyb.Id,
+                Name = Vyb.Name,
+                BoughtDateTime = Vyb.BoughtDateTime,
+            };
+    }
+
+}
