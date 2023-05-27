@@ -1,0 +1,100 @@
+﻿@page "/vybaveni/{Id:guid}"
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+@if (vybaveni == null)
+    return;
+
+<div class="text-2xl text-teal-600 mx-3 my-2">Detail vybaveni</div>
+
+<div class="grid grid-cols-2">
+    <div>Název</div>
+    <div>@vybaveni.Name</div>
+</div>
+
+<div class="flex flex-col mx-5 ">
+    <div class="text-bold text-xl">Revize:</div>
+    @foreach (var rev in vybaveni.Revizes.OrderByDescending(x => x.DateTime))
+    {
+        <div>@rev.Name - @rev.DateTime.ToString("yyyy-MM-dd")</div>
+    }
+</div>
+
+<div class="flex flex-col pt-5 gap-3">
+
+
+    <div class="text-bold text-xl">Úkony: <button @onclick="()=> {newUkon=new();}" class="twbtn bg-teal-500 @(newUkon==null?"":"hidden")">Přidat úkon</button></div>
+    @if (newUkon != null)
+    {
+        <EditForm class="col-span-4 grid gap-x-2 grid-cols-[auto_fr] max-w-sm" Model=newUkon OnValidSubmit="() => NewUkonValidSubmit()">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="col-span-2 text-red-500 font-bold" />
+
+            <label>Kod</label>
+            <InputText class="border-2 border-slate-300" @bind-Value=newUkon.Kod />
+            <label>Detail</label>
+            <InputTextArea class="border-2 border-slate-300" @bind-Value=newUkon.Detail />
+
+            <div class="flex col-span-2 gap-2">
+
+                <button type="submit" class="bg-amber-500 twbtn">
+                    Ok
+                </button>
+                <button @onclick="() => newUkon=null" class="bg-gray-500 twbtn">
+                    zruš
+                </button>
+
+            </div>
+        </EditForm>
+
+    }
+
+
+
+    @foreach (var ukon in vybaveni.Ukons.OrderByDescending(x => x.DateTime))
+    {
+        <div>
+            @ukon.Kod - @ukon.DateTime.ToString("yyyy-MM-dd")
+            <div class="text-sm px-4">
+                @ukon.Detail
+            </div>
+            <button @onclick="()=> SmazatUkon(ukon)" class="twbtn bg-red-400">Smazat</button>
+        </div>
+
+    }
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    VybaveniSrevizemaVm? vybaveni;
+
+    UkonVm? newUkon;
+
+    protected override async Task OnInitializedAsync()
+    {
+        vybaveni = await Http.GetFromJsonAsync<VybaveniSrevizemaVm>($"vybaveni/{Id}");
+    }
+
+    async Task SmazatUkon(UkonVm ukon)
+    {
+        if (vybaveni == null) return;
+        var res = await Http.DeleteAsync($"ukon/{ukon.Id}");
+        if (res.IsSuccessStatusCode)
+            vybaveni.Ukons.Remove(ukon);
+    }
+
+    async Task NewUkonValidSubmit()
+    {
+        if (newUkon == null || vybaveni == null)
+            return;
+        newUkon.VybaveniId = vybaveni.Id;
+        var res = await Http.PostAsJsonAsync("ukon", newUkon);
+        if (res.IsSuccessStatusCode)
+        {
+            vybaveni.Ukons.Add(newUkon);
+            newUkon.Id = await res.Content.ReadFromJsonAsync<Guid>();
+        }
+        newUkon = null;
+    }
+
+}
