@@ -5,6 +5,9 @@ public class RevizeVm
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
 
+    public DateTime DateTime { get; set; }
+    public Guid VybaveniId { get; set; }
+
     public static List<RevizeVm> VratRandSeznam(int pocet)
     {
         List<RevizeVm> list = new();

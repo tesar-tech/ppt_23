@@ -11,12 +11,20 @@
     <div>@vybaveni.Name</div>
 </div>
 
+<div class="flex flex-col">
+    <div>Revize:</div>
+    @foreach (var rev in vybaveni.Revizes.OrderByDescending(x=>x.DateTime))
+    {
+        <div>@rev.Name - @rev.DateTime.ToString("yyyy-MM-dd")</div>
+    }
+</div>
+
 @code {
     [Parameter] public Guid Id { get; set; }
-    VybaveniVm? vybaveni;
+    VybaveniSrevizemaVm? vybaveni;
 
     protected override async Task OnInitializedAsync()
     {
-        vybaveni = await Http.GetFromJsonAsync<VybaveniVm>($"vybaveni/{Id}");
+        vybaveni = await Http.GetFromJsonAsync<VybaveniSrevizemaVm>($"vybaveni/{Id}");
     }
 }

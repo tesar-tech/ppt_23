@@ -13,14 +13,14 @@
     <a href="@($"vybaveni/{Vyb.Id}")" class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"") underline hover:text-xl"> @Vyb.Name</a>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">@Vyb.BoughtDateTime.ToString("yyyy-MMM-dd")</div>
     <div class="@(Vyb.IsRevisionNeeded?"bg-orange-500":"")">
-        @Vyb.LastRevisionDateTime.ToString("yyyy-MMM-dd")
+        @(Vyb.LastRevisionDateTime?.ToString("yyyy-MMM-dd")??"žádná revize")
         @(Vyb.IsRevisionNeeded ? "❌" : "✅")
     </div>
 
 
     <div class="flex gap-2">
 
-        <button @onclick="() => Vyb.LastRevisionDateTime = DateTime.Now" class="bg-sky-500 twbtn">
+        <button @onclick="() => ProvesRevizi()" class="bg-sky-500 twbtn">
             Provést revizi
         </button>
 
@@ -106,4 +106,19 @@ else
             };
     }
 
+    async Task ProvesRevizi()
+    {
+        RevizeVm vm = new()
+            {
+                Name = $"Revize z {DateTime.Now.Ticks}",
+                DateTime = DateTime.Now,
+                VybaveniId = Vyb.Id
+            };
+        var odpoved = await Http.PostAsJsonAsync("revize", vm);
+        if (odpoved.IsSuccessStatusCode)
+        {
+            Vyb.LastRevisionDateTime = vm.DateTime;
+        }
+    }
 }
+

@@ -9,7 +9,7 @@ public class VybaveniVm
     public Guid Id { get; set; }
     public bool IsRevisionNeeded { get => DateTime.Now.AddYears(-2) < LastRevisionDateTime ; }
     public DateTime BoughtDateTime { get; set; }
-    public DateTime LastRevisionDateTime { get; set; }
+    public DateTime? LastRevisionDateTime { get; set; } 
 
     public int PriceCzk { get; set; }
 
@@ -33,4 +33,13 @@ public class VybaveniVm
     }
     public static string RandomString(int length) =>
            new(Enumerable.Range(0, length).Select(_ => (char)Random.Shared.Next('a', 'z')).ToArray());
+}
+
+public class VybaveniSrevizemaVm
+{
+    public string Name { get; set; } = "";
+    public Guid Id { get; set; }
+    //public bool IsRevisionNeeded { get => DateTime.Now.AddYears(-2) < LastRevisionDateTime; }
+    public DateTime BoughtDateTime { get; set; }
+    public List<RevizeVm> Revizes { get; set; } = new();
 }

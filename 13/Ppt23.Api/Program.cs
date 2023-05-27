@@ -48,16 +48,23 @@ List<RevizeVm> seznamRevizi = RevizeVm.VratRandSeznam(100);
 
 app.MapGet("/vybaveni", (PptDbContext db) =>
 {
-    List<VybaveniVm> destinations = db.Vybavenis.ProjectToType<VybaveniVm>().ToList();
-    return destinations;
+    var allVybavenis = db.Vybavenis.Include(x => x.Revizes).ToList();
+    List<VybaveniVm> vms = new();
+    foreach (var vybaveni in allVybavenis)
+    {
+        var vm = vybaveni.Adapt<VybaveniVm>();
+        vm.LastRevisionDateTime = vybaveni.Revizes.MaxBy(x => x.DateTime)?.DateTime;
+        vms.Add(vm);
+    }
+    return vms;
 });
 
-app.MapGet("/vybaveni/{id}", (Guid id) =>
+app.MapGet("/vybaveni/{id}", (Guid id, PptDbContext db) =>
 {
-    VybaveniVm? en = seznamVybaveni.SingleOrDefault(x => x.Id == id);
+    Vybaveni? en = db.Vybavenis.Include(x => x.Revizes).SingleOrDefault(x => x.Id == id);
     if (en is null)
         return Results.NotFound("Item Not Found!");
-    return Results.Ok(en);
+    return Results.Ok(en.Adapt<VybaveniSrevizemaVm>());
 });
 
 app.MapPost("/vybaveni", (VybaveniVm prichoziModel, PptDbContext db) =>
@@ -97,6 +104,15 @@ app.MapGet("/revize/{text}", (string text) =>
 {
     var filtrovaneRevize = seznamRevizi.Where(x => x.Name.Contains(text)).ToList();
     return Results.Ok(filtrovaneRevize);
+});
+
+app.MapPost("revize", (RevizeVm vm, PptDbContext db) =>
+{
+    if (vm.VybaveniId == Guid.Empty) return Results.BadRequest();
+    var en = vm.Adapt<Revize>();
+    db.Revizes.Add(en);
+    db.SaveChanges();
+    return Results.Ok(en.Id);
 });
 
 using var appContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>();
