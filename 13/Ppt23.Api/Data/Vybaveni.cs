@@ -12,5 +12,6 @@ public class Vybaveni
     public int PriceCzk { get; set; }
     public DateTime BoughtDateTime { get; set; }
     public List<Revize> Revizes { get; set; } = new();
+    public List<Ukon> Ukons { get; set; } = new();
 
 }

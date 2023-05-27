@@ -42,4 +42,5 @@ public class VybaveniSrevizemaVm
     //public bool IsRevisionNeeded { get => DateTime.Now.AddYears(-2) < LastRevisionDateTime; }
     public DateTime BoughtDateTime { get; set; }
     public List<RevizeVm> Revizes { get; set; } = new();
+    public List<UkonVm> Ukons { get; set; } = new();
 }

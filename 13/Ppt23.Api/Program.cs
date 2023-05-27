@@ -61,7 +61,7 @@ app.MapGet("/vybaveni", (PptDbContext db) =>
 
 app.MapGet("/vybaveni/{id}", (Guid id, PptDbContext db) =>
 {
-    Vybaveni? en = db.Vybavenis.Include(x => x.Revizes).SingleOrDefault(x => x.Id == id);
+    Vybaveni? en = db.Vybavenis.Include(x=>x.Ukons).Include(x => x.Revizes).SingleOrDefault(x => x.Id == id);
     if (en is null)
         return Results.NotFound("Item Not Found!");
     return Results.Ok(en.Adapt<VybaveniSrevizemaVm>());
@@ -113,6 +113,28 @@ app.MapPost("revize", (RevizeVm vm, PptDbContext db) =>
     db.Revizes.Add(en);
     db.SaveChanges();
     return Results.Ok(en.Id);
+});
+
+
+
+app.MapPost("ukon", (UkonVm vm, PptDbContext db) =>
+{
+    if (vm.VybaveniId == Guid.Empty) return Results.BadRequest();
+    var en = vm.Adapt<Ukon>();
+    db.Ukons.Add(en);
+    db.SaveChanges();
+    return Results.Ok(en.Id);
+});
+
+app.MapDelete("/ukon/{id}", (Guid id, PptDbContext db) =>
+{
+    var en = db.Ukons.SingleOrDefault(x => x.Id == id);
+    if (en == null)
+        return Results.NotFound("Item Not Found!");
+    db.Ukons.Remove(en);
+    db.SaveChanges();
+    return Results.Ok();
+
 });
 
 using var appContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<PptDbContext>();

@@ -20,7 +20,7 @@ public class SeedingData
 
             foreach (var vybaveni in vybaveniLis)
             {
-               int numOfRevizes =  Random.Shared.Next(0, 10);
+                int numOfRevizes = Random.Shared.Next(0, 10);
                 for (int i = 0; i < numOfRevizes; i++)
                 {
                     Revize rev = new()
@@ -29,17 +29,34 @@ public class SeedingData
                         DateTime = vybaveni.BoughtDateTime.AddDays(Random.Shared.Next(0, 3 * 365)),
                     };
                     vybaveni.Revizes.Add(rev);
+
+
+
                 }
 
-            }
-                
-            _db.Vybavenis.AddRange(vybaveniLis);
-        }
+                foreach (var num in Enumerable.Range(0, Random.Shared.Next(0, 20)))
+                {
+                    Ukon ukon = new()
+                    {
+                        Kod = RandomString(Random.Shared.Next(5, 10)),
+                        DateTime = vybaveni.BoughtDateTime.AddDays(Random.Shared.Next(0, 3 * 365)),
+                        Detail = RandomString(Random.Shared.Next(5, 350))
+                    };
+                    vybaveni.Ukons.Add(ukon);
+                }
 
-        await _db.SaveChangesAsync();
+
+
+                _db.Vybavenis.AddRange(vybaveniLis);
+            }
+
+            await _db.SaveChangesAsync();
+        }
     }
 
-    public static string RandomString(int length) =>
-       new(Enumerable.Range(0, length).Select(_ => (char)Random.Shared.Next('a', 'z')).ToArray());
+        public static string RandomString(int length) =>
+           new(Enumerable.Range(0, length).Select(_ =>
+           Random.Shared.Next(0, 5) == 0 ? ' ' : //randomly add spaces
+           (char)Random.Shared.Next('a', 'z')).ToArray());//add random chars
 
-}
+    }
