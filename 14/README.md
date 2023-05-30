@@ -2,7 +2,7 @@
 
 ## [0.3] Tabulka pracovníků
 
-Přidejte tabulku pracovníků
+Přidejte do databáze tabulku pracovníků
 
 - Pracovníci jsou zodpovědní za úkon. Například: Radiologický asistent, který provedl CT vyšetření. Doktor, který při operaci využil elektrokauter.
 - Vždy pouze jedna osoba na daný úkon
@@ -11,10 +11,9 @@ Přidejte tabulku pracovníků
 
 ## [0.3] Seed pracovníků
 
-- naplňte databázi pracovníky
+- naplňte tabulku pracovníků v databázi
 - předpokládá se, že máte hotový seed pro úkony. Pokud nikoliv, inspirujte se v ppt_23 repu.
 - některé úkony budou mít pracovníka, některé nikoliv.
-- přidejte pracovníka se jménem `__user_remove__`, to použijeme v dalším kroku
 
 ## [0.3] Pracovník do výpisu úkonů
 
@@ -28,7 +27,7 @@ Přidejte pracovníka (stačí jeho jméno) do výpisu úkonů (detail vybavení
 
 - v případě, že je pracovník u úkonu zobrazte název (kód) úkonu zelenou barvou.
 
-## BONUS - Odebrání pracovníka
+## [0.3] BONUS - Odebrání pracovníka
 
 - Přidejte tlačítko na odebrání pracovníka
 - Implementujte endpoint na adrese `/ukon/{id:guid}/removepracovnik`
@@ -36,7 +35,6 @@ Přidejte pracovníka (stačí jeho jméno) do výpisu úkonů (detail vybavení
   Nebude to PUT, jelikož pouze upravujeme část nějaké entity (v tomto případě úkonu, což by vám mělo napovědět jak pracovníka smazat)
   - upravte patřičně CORS
 - V Blazoru vhodně endpoint zavolejte a navázejte na to patřičnou akci (úprava vybavení na klientovi)
-
 
 ## Fragmenty kódu, které se vám mohou hodit
 
