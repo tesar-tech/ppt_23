@@ -20,7 +20,7 @@
     }
 </div>
 
-<div class="flex flex-col pt-5 gap-3">
+<div class="flex flex-col pt-5 gap-3 mx-5">
 
 
     <div class="text-bold text-xl">Úkony: <button @onclick="()=> {newUkon=new();}" class="twbtn bg-teal-500 @(newUkon==null?"":"hidden")">Přidat úkon</button></div>
@@ -53,8 +53,9 @@
 
     @foreach (var ukon in vybaveni.Ukons.OrderByDescending(x => x.DateTime))
     {
-        <div>
-            @ukon.Kod - @ukon.DateTime.ToString("yyyy-MM-dd")
+        <div >
+            <span class="@(ukon.PracovnikName==null?"":"text-green-500")">@ukon.Kod </span>- @ukon.DateTime.ToString("yyyy-MM-dd")
+            <div>Pracovnik: @(ukon.PracovnikName??"žádný pracovník")</div>
             <div class="text-sm px-4">
                 @ukon.Detail
             </div>

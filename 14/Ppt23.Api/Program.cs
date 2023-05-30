@@ -61,7 +61,9 @@ app.MapGet("/vybaveni", (PptDbContext db) =>
 
 app.MapGet("/vybaveni/{id}", (Guid id, PptDbContext db) =>
 {
-    Vybaveni? en = db.Vybavenis.Include(x=>x.Ukons).Include(x => x.Revizes).SingleOrDefault(x => x.Id == id);
+    Vybaveni? en = db.Vybavenis
+    .Include(x=>x.Ukons).ThenInclude(x=>x.Pracovnik)
+    .Include(x => x.Revizes).SingleOrDefault(x => x.Id == id);
     if (en is null)
         return Results.NotFound("Item Not Found!");
     return Results.Ok(en.Adapt<VybaveniSrevizemaVm>());
